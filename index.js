@@ -1,3 +1,4 @@
+import './db/index.js'
 import express from 'express'
 
 import alumnos from './api/alumnos.js'
