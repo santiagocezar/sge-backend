@@ -23,11 +23,16 @@ docentes.route("/:id")
             error(res, 404, "no existe el docente");
         }
     })
-    .put((req, res) => {
-        
+    .put(async (req, res) => {
+        const [data] = await Teacher.upsert({...req.body, id: req.params.id})
+        res.status(200)
+        res.json({ ok: true, id: data.id })
     })
-    .delete((req, res) => {
-        
+    .delete(async (req, res) => {
+        const data = await Teacher.findByPk(req.params.id)
+        await data.destroy()
+        res.status(200)
+        res.json({ ok: true })
     })
 
 export default docentes
