@@ -74,11 +74,16 @@ export const Subject = sequelize.define('Subject', {
   schedule: { type: DataTypes.STRING, allowNull: false },
 });
 
-Student.belongsToMany(Subject, { through: "Enrollment" })
-Student.belongsToMany(Subject, { through: "Absence" })
-Student.belongsToMany(Subject, { through: "Grade" })
+Student.belongsToMany(Subject, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false }, otherKey: { name: "subjectID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "studentID", allowNull: false }, otherKey: { name: "subjectID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false }, otherKey: { name: "subjectID", allowNull: false } })
 
-Teacher.hasMany(Subject)
+Teacher.hasMany(Subject, {
+  foreignKey: { 
+    name: "teacherID",
+    allowNull: false,
+  }
+})
 
 try {
   await sequelize.authenticate();
