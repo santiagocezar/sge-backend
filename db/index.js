@@ -54,6 +54,14 @@ export const Grade = sequelize.define('Grade', {
   grade: DataTypes.INTEGER,
 });
 
+export const Enrollment = sequelize.define('Enrollment', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+});
+
 export const Subject = sequelize.define('Subject', {
   id: {
     type: DataTypes.INTEGER,
@@ -65,6 +73,12 @@ export const Subject = sequelize.define('Subject', {
   duration: DataTypes.INTEGER,
   schedule: DataTypes.STRING,
 });
+
+Student.belongsToMany(Subject, { through: "Enrollment" })
+Student.belongsToMany(Subject, { through: "Absence" })
+Student.belongsToMany(Subject, { through: "Grade" })
+
+Teacher.hasMany(Subject)
 
 try {
   await sequelize.authenticate();
