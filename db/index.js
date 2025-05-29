@@ -18,7 +18,7 @@ export const Student = sequelize.define('Student', {
   dni: DataTypes.INTEGER,
   email: DataTypes.STRING,
   phone: DataTypes.STRING,
-  carrer: DataTypes.STRING,
+  career: DataTypes.STRING,
 });
 
 export const Teacher = sequelize.define('Teacher', {
@@ -61,7 +61,7 @@ export const Subject = sequelize.define('Subject', {
     autoIncrement: true,
   },
   name: DataTypes.STRING,
-  carrer: DataTypes.STRING,
+  career: DataTypes.STRING,
   duration: DataTypes.INTEGER,
   schedule: DataTypes.STRING,
 });
