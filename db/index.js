@@ -13,12 +13,12 @@ export const Student = sequelize.define('Student', {
     primaryKey: true,
     autoIncrement: true,
   },
-  name: DataTypes.STRING,
-  surname: DataTypes.STRING,
-  dni: DataTypes.INTEGER,
-  email: DataTypes.STRING,
-  phone: DataTypes.STRING,
-  career: DataTypes.STRING,
+  name: { type: DataTypes.STRING, allowNull: false },
+  surname: { type: DataTypes.STRING, allowNull: false },
+  dni: { type: DataTypes.INTEGER, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false },
+  carrer: { type: DataTypes.STRING, allowNull: false },
 });
 
 export const Teacher = sequelize.define('Teacher', {
@@ -27,11 +27,11 @@ export const Teacher = sequelize.define('Teacher', {
     primaryKey: true,
     autoIncrement: true,
   },
-  name: DataTypes.STRING,
-  surname: DataTypes.STRING,
-  dni: DataTypes.INTEGER,
-  email: DataTypes.STRING,
-  phone: DataTypes.STRING,
+  name: { type: DataTypes.STRING, allowNull: false },
+  surname: { type: DataTypes.STRING, allowNull: false },
+  dni: { type: DataTypes.INTEGER, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false },
 });
 
 export const Absence = sequelize.define('Absence', {
@@ -40,8 +40,8 @@ export const Absence = sequelize.define('Absence', {
     primaryKey: true,
     autoIncrement: true,
   },
-  date: DataTypes.DATE,
-  justified: DataTypes.BOOLEAN,
+  date: { type: DataTypes.DATE, allowNull: false },
+  justified: { type: DataTypes.BOOLEAN, allowNull: false },
 });
 
 export const Grade = sequelize.define('Grade', {
@@ -50,8 +50,8 @@ export const Grade = sequelize.define('Grade', {
     primaryKey: true,
     autoIncrement: true,
   },
-  instance: DataTypes.STRING,
-  grade: DataTypes.INTEGER,
+  instance: { type: DataTypes.STRING, allowNull: false },
+  grade: { type: DataTypes.INTEGER, allowNull: false },
 });
 
 export const Enrollment = sequelize.define('Enrollment', {
@@ -68,10 +68,10 @@ export const Subject = sequelize.define('Subject', {
     primaryKey: true,
     autoIncrement: true,
   },
-  name: DataTypes.STRING,
-  career: DataTypes.STRING,
-  duration: DataTypes.INTEGER,
-  schedule: DataTypes.STRING,
+  name: { type: DataTypes.STRING, allowNull: false },
+  carrer: { type: DataTypes.STRING, allowNull: false },
+  duration: { type: DataTypes.INTEGER, allowNull: false },
+  schedule: { type: DataTypes.STRING, allowNull: false },
 });
 
 Student.belongsToMany(Subject, { through: "Enrollment" })
