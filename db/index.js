@@ -18,7 +18,7 @@ export const Student = sequelize.define('Student', {
   dni: { type: DataTypes.INTEGER, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
-  carrer: { type: DataTypes.STRING, allowNull: false },
+  career: { type: DataTypes.STRING, allowNull: false },
 });
 
 export const Teacher = sequelize.define('Teacher', {
@@ -69,7 +69,7 @@ export const Subject = sequelize.define('Subject', {
     autoIncrement: true,
   },
   name: { type: DataTypes.STRING, allowNull: false },
-  carrer: { type: DataTypes.STRING, allowNull: false },
+  career: { type: DataTypes.STRING, allowNull: false },
   duration: { type: DataTypes.INTEGER, allowNull: false },
   schedule: { type: DataTypes.STRING, allowNull: false },
 });
