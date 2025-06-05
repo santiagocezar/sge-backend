@@ -16,12 +16,12 @@ alumnos.route("/")
             })
 
             if (!materia) {
-                res.json([])
+                error(res, 404, "no existe la materia");            
             } else {
-                res.json(await materia.getStudents())
+                res.status(200).json(await materia.getStudents())
             }
         } else {
-            res.json(await Student.findAll())
+            res.status(200).json(await Student.findAll())
         }
     })
     .post([
