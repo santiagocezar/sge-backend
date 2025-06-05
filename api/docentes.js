@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Student, Teacher } from "../db/index.js";
+import { Teacher } from "../db/index.js";
 import { error } from "./common.js";
 import { body, validationResult } from "express-validator";
 
@@ -19,7 +19,7 @@ docentes.route("/")
         async (req, res) => {
             const errors = validationResult(req)
 
-            if (!errors.isEmpty()){
+            if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
 
@@ -36,7 +36,18 @@ docentes.route("/:id")
             error(res, 404, "no existe el docente");
         }
     })
-    .put(async (req, res) => {
+    .put([
+        body("name").notEmpty().withMessage("Se requiere nombre"),
+        body("surname").notEmpty().withMessage("Se requiere apellido"),
+        body("email").isEmail().withMessage("Email no es válido"),
+        body("phone").isMobilePhone().withMessage("Teléfono no es válido")
+    ], async (req, res) => {
+        const errors = validationResult(req)
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+        
         const [data] = await Teacher.upsert({ ...req.body, id: req.params.id })
         res.status(200)
         res.json({ ok: true, id: data.id })
