@@ -11,7 +11,7 @@ inasistencias.route("/")
     })
     .post([
         body("date").isDate().withMessage("Fecha incorrecta"),
-        body("grade").isInt().withMessage("Justificación debe ser booleano")
+        body("justified").isBoolean().withMessage("Justificación debe ser booleano")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

@@ -11,7 +11,7 @@ calificaciones.route("/")
     })
     .post([
         body("instance").isString().withMessage("Instancia debe ser string"),
-        body("justified").isBoolean().withMessage("Calificación debe ser entero").isIn[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].withMessage("Calificación debe estar entre 1 y 10")
+        body("grade").isInt().withMessage("Calificación debe ser entero").isIn[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].withMessage("Calificación debe estar entre 1 y 10")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -42,7 +42,7 @@ calificaciones.route("/:id")
     })
     .put([
         body("instance").isString().withMessage("Instancia debe ser string"),
-        body("justified").isBoolean().withMessage("Calificación debe ser entero").isIn[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].withMessage("Calificación debe estar entre 1 y 10")
+        body("grade").isInt().withMessage("Calificación debe ser entero").isIn[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].withMessage("Calificación debe estar entre 1 y 10")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
