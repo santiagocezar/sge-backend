@@ -9,11 +9,11 @@ alumnos.route("/")
         query("materia").isInt().withMessage("El ID de la materia debe ser un número")
     ], async (req, res) => {
         if (req.query.materia) {
-            const materia = res.json(await Subject.findOne({
+            const materia = await Subject.findOne({
                 where: {
                     id: parseInt(req.query.materia)
                 }
-            }))
+            })
 
             if (!materia) {
                 res.json([])

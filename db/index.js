@@ -74,9 +74,12 @@ export const Subject = sequelize.define('Subject', {
   schedule: { type: DataTypes.STRING, allowNull: false },
 });
 
-Student.belongsToMany(Subject, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false }, otherKey: { name: "subjectID", allowNull: false } })
-Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "studentID", allowNull: false }, otherKey: { name: "subjectID", allowNull: false } })
-Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false }, otherKey: { name: "subjectID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false } })
+Subject.belongsToMany(Student, { through: "Enrollment", foreignKey: { name: "subjectID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "studentID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "subjectID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false } })
 
 Teacher.hasMany(Subject, {
   foreignKey: { 
