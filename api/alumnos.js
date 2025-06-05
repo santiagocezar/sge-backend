@@ -8,21 +8,13 @@ alumnos.route("/")
     .get([
         query("materia").isInt().withMessage("El ID de la materia debe ser un número")
     ], async (req, res) => {
-        if (req.query.materia) {
-            const materia = await Subject.findOne({
-                where: {
-                    id: parseInt(req.query.materia)
-                }
-            })
-
-            if (!materia) {
-                error(res, 404, "no existe la materia");            
-            } else {
-                res.status(200).json(await materia.getStudents())
-            }
-        } else {
-            res.status(200).json(await Student.findAll())
-        }
+        res.status(200).json(await Student.findAll({
+            include: req.query.materia ? [{
+                model: Subject,
+                where: { id: parseInt(req.query.materia) },
+                as: "enrollments"
+            }] : []
+        }))
     })
     .post([
         body("name").notEmpty().withMessage("Se requiere nombre"),

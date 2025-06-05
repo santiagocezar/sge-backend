@@ -74,16 +74,42 @@ export const Subject = sequelize.define('Subject', {
   schedule: { type: DataTypes.STRING, allowNull: false },
 });
 
-Student.belongsToMany(Subject, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false } })
-Subject.belongsToMany(Student, { through: "Enrollment", foreignKey: { name: "subjectID", allowNull: false } })
-Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "studentID", allowNull: false } })
-Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "subjectID", allowNull: false } })
-Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false } })
-Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false } })
+Student.belongsToMany(Subject, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false }, as: "enrollments" })
+Subject.belongsToMany(Student, { through: "Enrollment", foreignKey: { name: "subjectID", allowNull: false }, as: "enrollments" })
+// Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "studentID", allowNull: false }, as: "absences" })
+// Subject.belongsToMany(Student, { through: "Absence", foreignKey: { name: "subjectID", allowNull: false }, as: "absences" })
+// Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false }, as: "grades" })
+// Subject.belongsToMany(Student, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false }, as: "grades" })
 
 Teacher.hasMany(Subject, {
   foreignKey: { 
     name: "teacherID",
+    allowNull: false,
+  }
+})
+
+Student.hasMany(Grade, {
+  foreignKey: { 
+    name: "studentID",
+    allowNull: false,
+  }
+})
+Student.hasMany(Absence, {
+  foreignKey: { 
+    name: "studentID",
+    allowNull: false,
+  }
+})
+
+Subject.hasMany(Grade, {
+  foreignKey: { 
+    name: "subjectID",
+    allowNull: false,
+  }
+})
+Subject.hasMany(Absence, {
+  foreignKey: { 
+    name: "subjectID",
     allowNull: false,
   }
 })

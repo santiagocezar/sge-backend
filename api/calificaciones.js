@@ -1,13 +1,25 @@
 import { Router } from "express";
 import { Grade, Student, Subject } from "../db/index.js";
 import { error } from "./common.js";
-import { body, validationResult } from "express-validator";
+import { body, query, validationResult } from "express-validator";
 
 const calificaciones = Router()
 
 calificaciones.route("/")
-    .get(async (req, res) => {
-        res.json(await Grade.findAll())
+    .get([
+        query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
+        query("materia").isInt().withMessage("El ID de la materia debe ser un número"),
+    ], async (req, res) => {
+        res.status(200).json(await Grade.findAll({
+            where: {
+                ...(req.query.materia ? {
+                    subjectID: parseInt(req.query.materia)
+                } : {}),
+                ...(req.query.alumno ? {
+                    studentID: parseInt(req.query.alumno)
+                } : {}),
+            },
+        }))
     })
     .post([
         body("instance").isString().withMessage("Instancia debe ser string"),
