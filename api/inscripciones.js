@@ -6,7 +6,7 @@ const inscripciones = Router()
 
 inscripciones.route("/")
     .get(async (req, res) => {
-        res.json(await Enrollment.findAll())
+        res.status(200).json(await Enrollment.findAll())
     })
     .post(async (req, res) => {
         const { studentID, subjectID } = req.body;
