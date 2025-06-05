@@ -6,7 +6,7 @@ const materias = Router()
 
 materias.route("/")
     .get(async (req, res) => {
-        res.json(await Subject.findAll())
+        res.status(200).json(await Subject.findAll())
     })
     .post([
         body("name").notEmpty().withMessage("Se requiere nombre"),

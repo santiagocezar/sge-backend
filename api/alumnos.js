@@ -6,7 +6,7 @@ const alumnos = Router()
 
 alumnos.route("/")
     .get(async (req, res) => {
-        res.json(await Student.findAll())
+        res.status(200).json(await Student.findAll())
     })
     .post([
         body("name").notEmpty().withMessage("Se requiere nombre"),
@@ -40,8 +40,7 @@ alumnos.route("/:id")
         body("phone").isMobilePhone().withMessage("Teléfono no es válido")
     ], async (req, res) => {
         const [data] = await Student.upsert({ ...req.body, id: req.params.id })
-        res.status(200)
-        res.json({ ok: true, id: data.id })
+        res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async (req, res) => {
         const data = await Student.findByPk(req.params.id)
@@ -51,8 +50,7 @@ alumnos.route("/:id")
         }
 
         await data.destroy()
-        res.status(200)
-        res.json({ ok: true })
+        res.status(200).json({ ok: true })
     })
 
 export default alumnos

@@ -7,7 +7,7 @@ const calificaciones = Router()
 
 calificaciones.route("/")
     .get(async (req, res) => {
-        res.json(await Grade.findAll())
+        res.status(200).json(await Grade.findAll())
     })
     .post([
         body("instance").isString().withMessage("Instancia debe ser string"),

@@ -7,7 +7,7 @@ const inasistencias = Router()
 
 inasistencias.route("/")
     .get(async (req, res) => {
-        res.json(await Absence.findAll())
+        res.status(200).json(await Absence.findAll())
     })
     .post([
         body("date").isDate().withMessage("Fecha incorrecta"),

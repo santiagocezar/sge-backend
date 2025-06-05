@@ -49,8 +49,7 @@ docentes.route("/:id")
         }
         
         const [data] = await Teacher.upsert({ ...req.body, id: req.params.id })
-        res.status(200)
-        res.json({ ok: true, id: data.id })
+        res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async (req, res) => {
         const data = await Teacher.findByPk(req.params.id)
@@ -60,8 +59,7 @@ docentes.route("/:id")
         }
 
         await data.destroy()
-        res.status(200)
-        res.json({ ok: true })
+        res.status(200).json({ ok: true })
     })
 
 export default docentes
