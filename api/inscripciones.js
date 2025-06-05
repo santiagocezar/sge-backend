@@ -15,7 +15,7 @@ inscripciones.route("/")
         const subject = await Subject.findByPk(subjectID);
 
         if (!student || !subject) {
-            return error(res, 400, "no existe el alumno o la materia"); //se podría sacar, ya tira error cuando no existen
+            return error(res, 404, "no existe el alumno o la materia"); //se podría sacar, ya tira error cuando no existen
         }
 
         const data = await Enrollment.create(req.body)
