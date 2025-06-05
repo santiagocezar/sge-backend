@@ -41,7 +41,7 @@ inasistencias.route("/:id")
         }
     })
     .put([
-        body("date").isDate.withMessage("Fecha incorrecta"),
+        body("date").isDate().withMessage("Fecha incorrecta"),
         body("justified").isBoolean().withMessage("Justificación debe ser booleano")
     ], async (req, res) => {
         const errors = validationResult(req);
