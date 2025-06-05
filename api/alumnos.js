@@ -1,12 +1,28 @@
 import { Router } from "express";
-import { Student } from "../db/index.js";
-import { body, validationResult } from "express-validator";
+import { Student, Enrollment, Subject } from "../db/index.js";
+import { body, query, validationResult } from "express-validator";
 
 const alumnos = Router()
 
 alumnos.route("/")
-    .get(async (req, res) => {
-        res.json(await Student.findAll())
+    .get([
+        query("materia").isInt().withMessage("El ID de la materia debe ser un número")
+    ], async (req, res) => {
+        if (req.query.materia) {
+            const materia = res.json(await Subject.findOne({
+                where: {
+                    id: parseInt(req.query.materia)
+                }
+            }))
+
+            if (!materia) {
+                res.json([])
+            } else {
+                res.json(await materia.getStudents())
+            }
+        } else {
+            res.json(await Student.findAll())
+        }
     })
     .post([
         body("name").notEmpty().withMessage("Se requiere nombre"),
