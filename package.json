@@ -12,6 +12,7 @@
   "type": "module",
   "dependencies": {
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "sequelize": "^6.37.7",
     "sqlite3": "^5.1.7"
   }
