@@ -1,17 +1,29 @@
 import { Router } from "express";
 import { Grade, Student, Subject } from "../db/index.js";
 import { error } from "./common.js";
-import { body, validationResult } from "express-validator";
+import { body, query, validationResult } from "express-validator";
 
 const calificaciones = Router()
 
 calificaciones.route("/")
-    .get(async (req, res) => {
-        res.json(await Grade.findAll())
+    .get([
+        query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
+        query("materia").isInt().withMessage("El ID de la materia debe ser un número"),
+    ], async (req, res) => {
+        res.status(200).json(await Grade.findAll({
+            where: {
+                ...(req.query.materia ? {
+                    subjectID: parseInt(req.query.materia)
+                } : {}),
+                ...(req.query.alumno ? {
+                    studentID: parseInt(req.query.alumno)
+                } : {}),
+            },
+        }))
     })
     .post([
         body("instance").isString().withMessage("Instancia debe ser string"),
-        body("grade").isInt().withMessage("Calificación debe ser entero").isIn[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].withMessage("Calificación debe estar entre 1 y 10")
+        body("grade").isInt().withMessage("Calificación debe ser entero").isIn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).withMessage("Calificación debe estar entre 1 y 10")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -42,7 +54,7 @@ calificaciones.route("/:id")
     })
     .put([
         body("instance").isString().withMessage("Instancia debe ser string"),
-        body("grade").isInt().withMessage("Calificación debe ser entero").isIn[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].withMessage("Calificación debe estar entre 1 y 10")
+        body("grade").isInt().withMessage("Calificación debe ser entero").isIn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).withMessage("Calificación debe estar entre 1 y 10")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
