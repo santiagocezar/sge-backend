@@ -48,6 +48,8 @@ docentes.route("/:id")
             return res.status(400).json({ errors: errors.array() });
         }
         
+        delete req.body.password
+
         const [data] = await Teacher.upsert({ ...req.body, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })

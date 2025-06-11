@@ -9,6 +9,7 @@ import calificaciones from './api/calificaciones.js'
 import docentes from './api/docentes.js'
 import inscripciones from './api/inscripciones.js'
 import { error } from './api/common.js'
+import auth from './api/auth.js'
 
 const app = express()
 
@@ -20,6 +21,7 @@ app.use("/api/inasistencias", inasistencias)
 app.use("/api/calificaciones", calificaciones)
 app.use("/api/docentes", docentes)
 app.use("/api/inscripciones", inscripciones)
+app.use("/api/auth", auth)
 
 app.use((err, req, res, next) => {
   console.error(err.stack)

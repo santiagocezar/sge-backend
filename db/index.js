@@ -19,6 +19,7 @@ export const Student = sequelize.define('Student', {
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
   career: { type: DataTypes.STRING, allowNull: false },
+  password: { type: DataTypes.STRING, allowNull: false },
 });
 
 export const Teacher = sequelize.define('Teacher', {
@@ -32,6 +33,7 @@ export const Teacher = sequelize.define('Teacher', {
   dni: { type: DataTypes.INTEGER, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: false },
+  password: { type: DataTypes.STRING, allowNull: false },
 });
 
 export const Absence = sequelize.define('Absence', {
@@ -81,6 +83,12 @@ Subject.belongsToMany(Student, { through: "Enrollment", foreignKey: { name: "sub
 // Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false }, as: "grades" })
 // Subject.belongsToMany(Student, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false }, as: "grades" })
 
+Subject.hasOne(Teacher, {
+  foreignKey: { 
+    name: "id",
+    allowNull: false,
+  }
+})
 Teacher.hasMany(Subject, {
   foreignKey: { 
     name: "teacherID",

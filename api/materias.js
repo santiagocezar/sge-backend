@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Enrollment, Student, Subject } from "../db/index.js";
+import { Enrollment, Student, Subject, Teacher } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 
 const materias = Router()
@@ -14,12 +14,18 @@ materias.route("/")
                 ...(req.query.docente ? {
                     teacherID: parseInt(req.query.docente)
                 } : {}),
-            },  
-            include: req.query.alumno ? [{
-                model: Student,
-                where: { id: parseInt(req.query.alumno) },
-                as: "enrollments"
-            }] : []
+            },
+            include: [
+                {
+                    model: Teacher,
+                    required: true,
+                },
+                ...(req.query.alumno ? [{
+                    model: Student,
+                    where: { id: parseInt(req.query.alumno) },
+                    as: "enrollments"
+                }] : [])
+            ]
         }))
     })
     .post([

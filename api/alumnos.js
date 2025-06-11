@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Student, Enrollment, Subject } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
+import bcrypt from "bcrypt";
 
 const alumnos = Router()
 
@@ -28,6 +29,8 @@ alumnos.route("/")
             return res.status(400).json({ errors: errors.array() });
         }
 
+        req.body.password = await bcrypt.hash(req.body.password, 10)
+
         const data = await Student.create(req.body)
         res.status(201).json({ ok: true, id: data.id })
     })
@@ -47,6 +50,8 @@ alumnos.route("/:id")
         body("email").isEmail().withMessage("Email no es válido"),
         body("phone").isMobilePhone().withMessage("Teléfono no es válido")
     ], async (req, res) => {
+        delete req.body.password
+
         const [data] = await Student.upsert({ ...req.body, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
