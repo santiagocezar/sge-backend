@@ -1,17 +1,29 @@
 import { Router } from "express";
 import { Absence, Student, Subject } from "../db/index.js";
 import { error } from "./common.js";
-import { body, validationResult } from "express-validator";
+import { body, validationResult, query } from "express-validator";
 
 const inasistencias = Router()
 
 inasistencias.route("/")
-    .get(async (req, res) => {
-        res.status(200).json(await Absence.findAll())
+    .get([
+        query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
+        query("materia").isInt().withMessage("El ID de la materia debe ser un número"),
+    ], async (req, res) => {
+        res.status(200).json(await Absence.findAll({
+            where: {
+                ...(req.query.materia ? {
+                    subjectID: parseInt(req.query.materia)
+                } : {}),
+                ...(req.query.alumno ? {
+                    studentID: parseInt(req.query.alumno)
+                } : {}),
+            },
+        }))
     })
     .post([
         body("date").isDate().withMessage("Fecha incorrecta"),
-        body("grade").isInt().withMessage("Justificación debe ser booleano")
+        body("justified").isBoolean().withMessage("Justificación debe ser booleano")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
