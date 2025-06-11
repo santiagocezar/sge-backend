@@ -1,5 +1,6 @@
 import './db/index.js'
 import express from 'express'
+import cors from 'cors'
 
 import alumnos from './api/alumnos.js'
 import materias from './api/materias.js'
@@ -12,6 +13,7 @@ import { error } from './api/common.js'
 const app = express()
 
 app.use(express.json());
+app.use(cors());
 app.use("/api/alumnos", alumnos)
 app.use("/api/materias", materias)
 app.use("/api/inasistencias", inasistencias)
