@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Absence, Student, Subject } from "../db/index.js";
 import { error } from "./common.js";
-import { body, validationResult } from "express-validator";
+import { body, validationResult, query } from "express-validator";
 
 const inasistencias = Router()
 
