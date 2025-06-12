@@ -30,7 +30,7 @@ materias.route("/")
     })
     .post([
         body("name").notEmpty().withMessage("Se requiere nombre"),
-        body("career").isString().withMessage("Carrera debe ser string").isIn(["A", "B", "C", "D", "E"]).withMessage("Carrera no encontrada"),
+        body("career").isString().withMessage("Carrera debe ser string").isIn(["A", "B", "C", "D", "E", "Z"]).withMessage("Carrera no encontrada"),
         body("duration").isInt().withMessage("Duración debe ser entero").isIn([0, 1, 2]).withMessage("Duración debe ser 0, 1 o 2")
     ],
         async (req, res) => {
@@ -55,7 +55,7 @@ materias.route("/:id")
     })
     .put([
         body("name").notEmpty().withMessage("Se requiere nombre"),
-        body("career").isString().withMessage("Carrera debe ser string").isIn(["A", "B", "C", "D", "E"]).withMessage("Carrera no encontrada"),
+        body("career").isString().withMessage("Carrera debe ser string").isIn(["A", "B", "C", "D", "E", "Z"]).withMessage("Carrera no encontrada"),
         body("duration").isInt().withMessage("Duración debe ser entero").isIn([0, 1, 2]).withMessage("Duración debe ser 0, 1 o 2")
     ], async (req, res) => {
         const errors = validationResult(req)
