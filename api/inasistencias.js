@@ -27,16 +27,16 @@ inasistencias.route("/")
     ], async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
+            return res.status(400).json({ errors: errors.array() })
         }
 
-        const { studentID, subjectID } = req.body;
+        const { studentID, subjectID } = req.body
 
-        const student = await StudentTable.findByPk(studentID);
-        const subject = await SubjectTable.findByPk(subjectID);
+        const student = await StudentTable.findByPk(studentID)
+        const subject = await SubjectTable.findByPk(subjectID)
 
         if (!student || !subject) {
-            return error(res, 404, "no existe el alumno o la materia"); //se podría sacar, ya tira error cuando no existen
+            return error(res, 404, "no existe el alumno o la materia")
         }
 
         const data = await AbsenceTable.create(req.body)
@@ -45,11 +45,11 @@ inasistencias.route("/")
 
 inasistencias.route("/:id")
     .get(async (req, res) => {
-        const data = await AbsenceTable.findByPk(req.params.id);
+        const data = await AbsenceTable.findByPk(req.params.id)
         if (data) {
             res.status(200).json(data)
         } else {
-            error(res, 404, "no existe la inscripción");
+            error(res, 404, "no existe la inscripción")
         }
     })
     .put([
@@ -68,7 +68,7 @@ inasistencias.route("/:id")
         const data = await AbsenceTable.findByPk(req.params.id)
 
         if (!data) {
-            return error(res, 404, "no existe la inscripción");
+            return error(res, 404, "no existe la inscripción")
         }
 
         await data.destroy()
