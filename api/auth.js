@@ -8,14 +8,14 @@ import jwt from "jsonwebtoken";
 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
     modulusLength: 2048,
     publicKeyEncoding: {
-      type: 'spki',
-      format: 'pem'
+        type: 'spki',
+        format: 'pem'
     },
     privateKeyEncoding: {
-      type: 'pkcs8',
-      format: 'pem',
+        type: 'pkcs8',
+        format: 'pem',
     }
-  })
+})
 
 const auth = Router()
 
@@ -24,14 +24,14 @@ auth.route("/login")
         const { isTeacher, email, password } = req.body;
 
         if (isTeacher === "true") {
-            const teacher = await Teacher.findOne({ 
+            const teacher = await Teacher.findOne({
                 where: {
                     email
                 }
             });
 
             const ok = await bcrypt.compare(password, teacher.password)
-            
+
             if (ok) {
                 jwt.sign({
                     role: "teacher",
@@ -43,21 +43,21 @@ auth.route("/login")
                 return
             }
         } else {
-            const student = await Student.findOne({ 
+            const student = await Student.findOne({
                 where: {
                     email
                 }
             });
 
             const ok = await bcrypt.compare(password, student.password)
-            
+
             if (ok) {
                 const token = jwt.sign({
                     role: "student",
                 }, privateKey, {
                     algorithm: "RS512"
                 })
-                
+
                 res.status(200).json({ ok: true, token })
                 return
             }
@@ -65,5 +65,27 @@ auth.route("/login")
 
         error(res, 401, "Contraseña o usuario incorrectos")
     })
+
+export const verifyToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return error(res, 401, "No se proporcionó el token")
+    }
+
+    const parts = authHeader.split(" ");
+    if (parts.length !== 2) {
+        return error(res, 401, "Formato de token inválido")
+    }
+
+    const [scheme, token] = parts;
+
+    jwt.verify(token, publicKey, { algorithms: ["RS512"] }, (err) => {
+        if (err) {
+            return error(res, 401, "Token inválido")
+        }
+        next();
+    });
+};
+
 
 export default auth

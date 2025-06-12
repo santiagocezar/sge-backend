@@ -2,8 +2,11 @@ import { Router } from "express";
 import { Student, Enrollment, Subject } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
+import { verifyToken } from "./auth.js";
 
 const alumnos = Router()
+
+alumnos.use(verifyToken)
 
 alumnos.route("/")
     .get([
