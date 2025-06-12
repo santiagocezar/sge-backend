@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { EnrollmentTable, StudentTable, SubjectTable, TeacherTable } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
+import { SubjectSchema, validarPost, validarPut } from "../db/schema.js";
 
 const materias = Router()
 
@@ -28,21 +29,12 @@ materias.route("/")
             ]
         }))
     })
-    .post([
-        body("name").notEmpty().withMessage("Se requiere nombre"),
-        body("career").isString().withMessage("Carrera debe ser string").isIn(["A", "B", "C", "D", "E", "Z"]).withMessage("Carrera no encontrada"),
-        body("duration").isInt().withMessage("Duración debe ser entero").isIn([0, 1, 2]).withMessage("Duración debe ser 0, 1 o 2")
-    ],
-        async (req, res) => {
-            const errors = validationResult(req)
+    .post(async (req, res) => {
+        const materia = validarPost(SubjectSchema, req.body)
 
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array() });
-            }
-
-            const data = await SubjectTable.create(req.body)
-            res.status(201).json({ ok: true, id: data.id })
-        })
+        const data = await SubjectTable.create(materia)
+        res.status(201).json({ ok: true, id: data.id })
+    })
 
 materias.route("/:id")
     .get(async (req, res) => {
@@ -53,18 +45,10 @@ materias.route("/:id")
             error(res, 404, "no existe la materia");
         }
     })
-    .put([
-        body("name").notEmpty().withMessage("Se requiere nombre"),
-        body("career").isString().withMessage("Carrera debe ser string").isIn(["A", "B", "C", "D", "E", "Z"]).withMessage("Carrera no encontrada"),
-        body("duration").isInt().withMessage("Duración debe ser entero").isIn([0, 1, 2]).withMessage("Duración debe ser 0, 1 o 2")
-    ], async (req, res) => {
-        const errors = validationResult(req)
+    .put(async (req, res) => {
+        const materia = validarPut(SubjectSchema, req.body)
 
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const [data] = await SubjectTable.upsert({ ...req.body, id: req.params.id })
+        const [data] = await SubjectTable.upsert({ ...materia, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async(req, res) => {

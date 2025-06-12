@@ -87,7 +87,7 @@ export const SubjectSchema = z.object({
     id: z.int(),
     name: z.string(),
     career: z.literal(["A", "B", "C", "D", "E", "Z"]),
-    duration: z.int(),
+    duration: z.literal([ 0, 1, 2 ]),
     schedule: z.string(),
     teacherID: z.int(),
 })
