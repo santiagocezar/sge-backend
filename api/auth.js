@@ -35,6 +35,7 @@ auth.route("/login")
             if (ok) {
                 jwt.sign({
                     role: "teacher",
+                    id: teacher.id
                 }, privateKey, {
                     algorithm: "RS512"
                 })
@@ -54,6 +55,7 @@ auth.route("/login")
             if (ok) {
                 const token = jwt.sign({
                     role: "student",
+                    id: student.id
                 }, privateKey, {
                     algorithm: "RS512"
                 })
