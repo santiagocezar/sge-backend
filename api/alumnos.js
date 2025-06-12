@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { Student, Enrollment, Subject } from "../db/index.js";
+import { StudentTable, EnrollmentTable, SubjectTable } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import { verifyToken } from "./auth.js";
+import { StudentSchema } from "../db/schema.js";
 
 const alumnos = Router()
 
@@ -12,54 +13,46 @@ alumnos.route("/")
     .get([
         query("materia").isInt().withMessage("El ID de la materia debe ser un número")
     ], async (req, res) => {
-        res.status(200).json(await Student.findAll({
+        res.status(200).json(await StudentTable.findAll({
             include: req.query.materia ? [{
-                model: Subject,
+                model: SubjectTable,
                 where: { id: parseInt(req.query.materia) },
                 as: "enrollments"
             }] : []
         }))
     })
-    .post([
-        body("name").notEmpty().withMessage("Se requiere nombre"),
-        body("surname").notEmpty().withMessage("Se requiere apellido"),
-        body("email").isEmail().withMessage("Email no es válido"),
-        body("phone").isMobilePhone().withMessage("Teléfono no es válido")
-    ], async (req, res) => {
-        const errors = validationResult(req)
+    .post(async (req, res) => {
+        const alumno = StudentSchema.parse(req.body)
 
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        req.body.password = await bcrypt.hash(req.body.password, 10)
+        alumno.password = await bcrypt.hash(alumno.password, 10)
 
-        const data = await Student.create(req.body)
+        const data = await StudentTable.create(alumno)
         res.status(201).json({ ok: true, id: data.id })
     })
 
 alumnos.route("/:id")
     .get(async (req, res) => {
-        const data = await Student.findByPk(req.params.id);
+        const data = await StudentTable.findByPk(req.params.id);
         if (data) {
             res.status(200).json(data)
         } else {
             error(res, 404, "no existe el alumno");
         }
     })
-    .put([
-        body("name").notEmpty().withMessage("Se requiere nombre"),
-        body("surname").notEmpty().withMessage("Se requiere apellido"),
-        body("email").isEmail().withMessage("Email no es válido"),
-        body("phone").isMobilePhone().withMessage("Teléfono no es válido")
-    ], async (req, res) => {
-        delete req.body.password
+    .put(async (req, res) => {
+        const alumno = StudentSchema.parse(req.body)
 
-        const [data] = await Student.upsert({ ...req.body, id: req.params.id })
+        delete alumno.password
+
+        const [data] = await StudentTable.upsert({ ...alumno, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async (req, res) => {
-        const data = await Student.findByPk(req.params.id)
+        const data = await StudentTable.findByPk(req.params.id)
 
         if (!data) {
             return error(res, 404, "no existe el alumno");

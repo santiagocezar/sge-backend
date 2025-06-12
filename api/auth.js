@@ -1,6 +1,6 @@
 import { generateKeyPairSync } from "crypto";
 import { Router } from "express";
-import { Enrollment, Student, Subject, Teacher } from "../db/index.js";
+import { EnrollmentTable, StudentTable, SubjectTable, TeacherTable } from "../db/index.js";
 import { error } from "./common.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -24,7 +24,7 @@ auth.route("/login")
         const { isTeacher, email, password } = req.body;
 
         if (isTeacher === "true") {
-            const teacher = await Teacher.findOne({
+            const teacher = await TeacherTable.findOne({
                 where: {
                     email
                 }
@@ -43,7 +43,7 @@ auth.route("/login")
                 return
             }
         } else {
-            const student = await Student.findOne({
+            const student = await StudentTable.findOne({
                 where: {
                     email
                 }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Enrollment, Student, Subject, Teacher } from "../db/index.js";
+import { EnrollmentTable, StudentTable, SubjectTable, TeacherTable } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 
 const materias = Router()
@@ -9,7 +9,7 @@ materias.route("/")
         query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
         query("docente").isInt().withMessage("El ID de la docente debe ser un número"),
     ], async (req, res) => {
-        res.status(200).json(await Subject.findAll({
+        res.status(200).json(await SubjectTable.findAll({
             where: {
                 ...(req.query.docente ? {
                     teacherID: parseInt(req.query.docente)
@@ -17,11 +17,11 @@ materias.route("/")
             },
             include: [
                 {
-                    model: Teacher,
+                    model: TeacherTable,
                     required: true,
                 },
                 ...(req.query.alumno ? [{
-                    model: Student,
+                    model: StudentTable,
                     where: { id: parseInt(req.query.alumno) },
                     as: "enrollments"
                 }] : [])
@@ -40,13 +40,13 @@ materias.route("/")
                 return res.status(400).json({ errors: errors.array() });
             }
 
-            const data = await Subject.create(req.body)
+            const data = await SubjectTable.create(req.body)
             res.status(201).json({ ok: true, id: data.id })
         })
 
 materias.route("/:id")
     .get(async (req, res) => {
-        const data = await Subject.findByPk(req.params.id);
+        const data = await SubjectTable.findByPk(req.params.id);
         if (data) {
             res.status(200).json(data)
         } else {
@@ -64,11 +64,11 @@ materias.route("/:id")
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const [data] = await Subject.upsert({ ...req.body, id: req.params.id })
+        const [data] = await SubjectTable.upsert({ ...req.body, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async(req, res) => {
-        const data = await Subject.findByPk(req.params.id)
+        const data = await SubjectTable.findByPk(req.params.id)
 
         if (!data) {
             return error(res, 404, "no existe la materia");

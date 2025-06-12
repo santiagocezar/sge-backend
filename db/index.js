@@ -7,7 +7,7 @@ const sequelize = new Sequelize({
     benchmark: true
 })
 
-export const Student = sequelize.define('Student', {
+export const StudentTable = sequelize.define('Student', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -22,7 +22,7 @@ export const Student = sequelize.define('Student', {
   password: { type: DataTypes.STRING, allowNull: false },
 });
 
-export const Teacher = sequelize.define('Teacher', {
+export const TeacherTable = sequelize.define('Teacher', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -36,7 +36,7 @@ export const Teacher = sequelize.define('Teacher', {
   password: { type: DataTypes.STRING, allowNull: false },
 });
 
-export const Absence = sequelize.define('Absence', {
+export const AbsenceTable = sequelize.define('Absence', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -46,7 +46,7 @@ export const Absence = sequelize.define('Absence', {
   justified: { type: DataTypes.BOOLEAN, allowNull: false },
 });
 
-export const Grade = sequelize.define('Grade', {
+export const GradeTable = sequelize.define('Grade', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -56,7 +56,7 @@ export const Grade = sequelize.define('Grade', {
   grade: { type: DataTypes.INTEGER, allowNull: false },
 });
 
-export const Enrollment = sequelize.define('Enrollment', {
+export const EnrollmentTable = sequelize.define('Enrollment', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -64,7 +64,7 @@ export const Enrollment = sequelize.define('Enrollment', {
   },
 });
 
-export const Subject = sequelize.define('Subject', {
+export const SubjectTable = sequelize.define('Subject', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -76,46 +76,46 @@ export const Subject = sequelize.define('Subject', {
   schedule: { type: DataTypes.STRING, allowNull: false },
 });
 
-Student.belongsToMany(Subject, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false }, as: "enrollments" })
-Subject.belongsToMany(Student, { through: "Enrollment", foreignKey: { name: "subjectID", allowNull: false }, as: "enrollments" })
+StudentTable.belongsToMany(SubjectTable, { through: "Enrollment", foreignKey: { name: "studentID", allowNull: false }, as: "enrollments" })
+SubjectTable.belongsToMany(StudentTable, { through: "Enrollment", foreignKey: { name: "subjectID", allowNull: false }, as: "enrollments" })
 // Student.belongsToMany(Subject, { through: "Absence", foreignKey: { name: "studentID", allowNull: false }, as: "absences" })
 // Subject.belongsToMany(Student, { through: "Absence", foreignKey: { name: "subjectID", allowNull: false }, as: "absences" })
 // Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false }, as: "grades" })
 // Subject.belongsToMany(Student, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false }, as: "grades" })
 
-Subject.belongsTo(Teacher, {
+SubjectTable.belongsTo(TeacherTable, {
   foreignKey: { 
     name: "teacherID",
     allowNull: false,
   }
 })
-Teacher.hasMany(Subject, {
+TeacherTable.hasMany(SubjectTable, {
   foreignKey: { 
     name: "teacherID",
     allowNull: false,
   }
 })
 
-Student.hasMany(Grade, {
+StudentTable.hasMany(GradeTable, {
   foreignKey: { 
     name: "studentID",
     allowNull: false,
   }
 })
-Student.hasMany(Absence, {
+StudentTable.hasMany(AbsenceTable, {
   foreignKey: { 
     name: "studentID",
     allowNull: false,
   }
 })
 
-Subject.hasMany(Grade, {
+SubjectTable.hasMany(GradeTable, {
   foreignKey: { 
     name: "subjectID",
     allowNull: false,
   }
 })
-Subject.hasMany(Absence, {
+SubjectTable.hasMany(AbsenceTable, {
   foreignKey: { 
     name: "subjectID",
     allowNull: false,
