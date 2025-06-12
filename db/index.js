@@ -83,9 +83,9 @@ Subject.belongsToMany(Student, { through: "Enrollment", foreignKey: { name: "sub
 // Student.belongsToMany(Subject, { through: "Grade", foreignKey: { name: "studentID", allowNull: false }, as: "grades" })
 // Subject.belongsToMany(Student, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false }, as: "grades" })
 
-Subject.hasOne(Teacher, {
+Subject.belongsTo(Teacher, {
   foreignKey: { 
-    name: "id",
+    name: "teacherID",
     allowNull: false,
   }
 })
