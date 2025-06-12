@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { TeacherTable } from "../db/index.js";
+import { TeacherTable, StudentTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, validationResult } from "express-validator";
+import { TeacherSchema, validarPost } from "../db/schema.js";
 
 
 const docentes = Router()
@@ -23,7 +24,13 @@ docentes.route("/")
                 return res.status(400).json({ errors: errors.array() });
             }
 
-            const data = await TeacherTable.create(req.body)
+            const docente = validarPost(TeacherSchema, req.body)
+
+            if (await TeacherTable.findOne({ where: { email: docente.email } }) || await StudentTable.findOne({ where: { email: alumno.email } })) {
+                return error(res, 409, "ya existe una cuenta con ese email")
+            }
+
+            const data = await TeacherTable.create(docente)
             res.status(201).json({ ok: true, id: data.id })
         })
 
@@ -47,7 +54,7 @@ docentes.route("/:id")
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        
+
         delete req.body.password
 
         const [data] = await TeacherTable.upsert({ ...req.body, id: req.params.id })

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { StudentTable, EnrollmentTable, SubjectTable } from "../db/index.js";
+import { StudentTable, EnrollmentTable, SubjectTable, TeacherTable } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import { verifyToken } from "./auth.js";
 import { StudentSchema, validarPost, validarPut } from "../db/schema.js";
+import { error } from "./common.js";
 
 const alumnos = Router()
 
@@ -23,6 +24,10 @@ alumnos.route("/")
     })
     .post(async (req, res) => {
         const alumno = validarPost(StudentSchema, req.body)
+
+        if (await TeacherTable.findOne({where: {email: alumno.email}}) || await StudentTable.findOne({where: {email: alumno.email}})) {
+            return error(res, 409, "ya existe una cuenta con ese email")
+        }
 
         alumno.password = await bcrypt.hash(alumno.password, 10)
 

@@ -1,10 +1,10 @@
 import { DataTypes, Sequelize } from "sequelize";
 
 const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'db.sqlite',
-    logQueryParameters: true,
-    benchmark: true
+  dialect: 'sqlite',
+  storage: 'db.sqlite',
+  logQueryParameters: true,
+  benchmark: true
 })
 
 export const StudentTable = sequelize.define('Student', {
@@ -16,7 +16,7 @@ export const StudentTable = sequelize.define('Student', {
   name: { type: DataTypes.STRING, allowNull: false },
   surname: { type: DataTypes.STRING, allowNull: false },
   dni: { type: DataTypes.INTEGER, allowNull: false },
-  email: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
   phone: { type: DataTypes.STRING, allowNull: false },
   career: { type: DataTypes.STRING, allowNull: false },
   password: { type: DataTypes.STRING, allowNull: false },
@@ -31,7 +31,7 @@ export const TeacherTable = sequelize.define('Teacher', {
   name: { type: DataTypes.STRING, allowNull: false },
   surname: { type: DataTypes.STRING, allowNull: false },
   dni: { type: DataTypes.INTEGER, allowNull: false },
-  email: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false, unique: true },
   phone: { type: DataTypes.STRING, allowNull: false },
   password: { type: DataTypes.STRING, allowNull: false },
 });
@@ -84,39 +84,39 @@ SubjectTable.belongsToMany(StudentTable, { through: "Enrollment", foreignKey: { 
 // Subject.belongsToMany(Student, { through: "Grade", foreignKey: { name: "subjectID", allowNull: false }, as: "grades" })
 
 SubjectTable.belongsTo(TeacherTable, {
-  foreignKey: { 
+  foreignKey: {
     name: "teacherID",
     allowNull: false,
   }
 })
 TeacherTable.hasMany(SubjectTable, {
-  foreignKey: { 
+  foreignKey: {
     name: "teacherID",
     allowNull: false,
   }
 })
 
 StudentTable.hasMany(GradeTable, {
-  foreignKey: { 
+  foreignKey: {
     name: "studentID",
     allowNull: false,
   }
 })
 StudentTable.hasMany(AbsenceTable, {
-  foreignKey: { 
+  foreignKey: {
     name: "studentID",
     allowNull: false,
   }
 })
 
 SubjectTable.hasMany(GradeTable, {
-  foreignKey: { 
+  foreignKey: {
     name: "subjectID",
     allowNull: false,
   }
 })
 SubjectTable.hasMany(AbsenceTable, {
-  foreignKey: { 
+  foreignKey: {
     name: "subjectID",
     allowNull: false,
   }
