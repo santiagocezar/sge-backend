@@ -3,7 +3,7 @@ import { StudentTable, EnrollmentTable, SubjectTable } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import { verifyToken } from "./auth.js";
-import { StudentSchema } from "../db/schema.js";
+import { StudentSchema, validarPost, validarPut } from "../db/schema.js";
 
 const alumnos = Router()
 
@@ -22,11 +22,7 @@ alumnos.route("/")
         }))
     })
     .post(async (req, res) => {
-        const alumno = StudentSchema.parse(req.body)
-
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+        const alumno = validarPost(StudentSchema, req.body)
 
         alumno.password = await bcrypt.hash(alumno.password, 10)
 
@@ -44,7 +40,7 @@ alumnos.route("/:id")
         }
     })
     .put(async (req, res) => {
-        const alumno = StudentSchema.parse(req.body)
+        const alumno = validarPut(StudentSchema, req.body)
 
         delete alumno.password
 

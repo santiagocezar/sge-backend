@@ -1,5 +1,25 @@
 import { z } from "zod/v4";
 
+/** 
+ * @template {z.ZodObject} T
+ * @param {T} schema
+ * @param {any} data
+ * @return {Omit<z.infer<T>, "id">}
+ */
+export function validarPost(schema, data) {
+    return schema.omit({ id: true }).parse(data)
+}
+
+/** 
+ * @template {z.ZodObject} T
+ * @param {T} schema
+ * @param {any} data
+ * @return {Partial<z.infer<T>>}
+ */
+export function validarPut(schema, data) {
+    return schema.partial().parse(data)
+}
+
 /**
  * @typedef {z.infer<typeof StudentSchema>} Student
  */
@@ -9,7 +29,7 @@ export const StudentSchema = z.object({
     surname: z.string(),
     dni: z.int(),
     email: z.email(),
-    phone: z.e164(),
+    phone: z.string(),
     career: z.literal(["A", "B", "C", "D", "E", "Z"]),
     password: z.string(),
 })
@@ -23,7 +43,7 @@ export const TeacherSchema = z.object({
     surname: z.string(),
     dni: z.int(),
     email: z.email(),
-    phone: z.e164(),
+    phone: z.string(),
     password: z.string(),
 })
 
