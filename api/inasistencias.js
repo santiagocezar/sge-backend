@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Absence, Student, Subject } from "../db/index.js";
+import { AbsenceTable, StudentTable, SubjectTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, validationResult, query } from "express-validator";
 
@@ -10,7 +10,7 @@ inasistencias.route("/")
         query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
         query("materia").isInt().withMessage("El ID de la materia debe ser un número"),
     ], async (req, res) => {
-        res.status(200).json(await Absence.findAll({
+        res.status(200).json(await AbsenceTable.findAll({
             where: {
                 ...(req.query.materia ? {
                     subjectID: parseInt(req.query.materia)
@@ -32,20 +32,20 @@ inasistencias.route("/")
 
         const { studentID, subjectID } = req.body;
 
-        const student = await Student.findByPk(studentID);
-        const subject = await Subject.findByPk(subjectID);
+        const student = await StudentTable.findByPk(studentID);
+        const subject = await SubjectTable.findByPk(subjectID);
 
         if (!student || !subject) {
             return error(res, 404, "no existe el alumno o la materia"); //se podría sacar, ya tira error cuando no existen
         }
 
-        const data = await Absence.create(req.body)
+        const data = await AbsenceTable.create(req.body)
         res.status(201).json({ ok: true, id: data.id })
     })
 
 inasistencias.route("/:id")
     .get(async (req, res) => {
-        const data = await Absence.findByPk(req.params.id);
+        const data = await AbsenceTable.findByPk(req.params.id);
         if (data) {
             res.status(200).json(data)
         } else {
@@ -61,11 +61,11 @@ inasistencias.route("/:id")
             return res.status(400).json({ errors: errors.array() });
         }
         
-        const [data] = await Absence.upsert({ ...req.body, id: req.params.id })
+        const [data] = await AbsenceTable.upsert({ ...req.body, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async (req, res) => {
-        const data = await Absence.findByPk(req.params.id)
+        const data = await AbsenceTable.findByPk(req.params.id)
 
         if (!data) {
             return error(res, 404, "no existe la inscripción");

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { Teacher } from "../db/index.js";
+import { TeacherTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, validationResult } from "express-validator";
 
@@ -8,7 +8,7 @@ const docentes = Router()
 
 docentes.route("/")
     .get(async (req, res) => {
-        res.status(200).json(await Teacher.findAll())
+        res.status(200).json(await TeacherTable.findAll())
     })
     .post([
         body("name").notEmpty().withMessage("Se requiere nombre"),
@@ -23,13 +23,13 @@ docentes.route("/")
                 return res.status(400).json({ errors: errors.array() });
             }
 
-            const data = await Teacher.create(req.body)
+            const data = await TeacherTable.create(req.body)
             res.status(201).json({ ok: true, id: data.id })
         })
 
 docentes.route("/:id")
     .get(async (req, res) => {
-        const data = await Teacher.findByPk(req.params.id);
+        const data = await TeacherTable.findByPk(req.params.id);
         if (data) {
             res.status(200).json(data)
         } else {
@@ -50,11 +50,11 @@ docentes.route("/:id")
         
         delete req.body.password
 
-        const [data] = await Teacher.upsert({ ...req.body, id: req.params.id })
+        const [data] = await TeacherTable.upsert({ ...req.body, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
     .delete(async (req, res) => {
-        const data = await Teacher.findByPk(req.params.id)
+        const data = await TeacherTable.findByPk(req.params.id)
 
         if (!data) {
             return error(res, 404, "no existe el docente");
