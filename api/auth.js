@@ -4,6 +4,7 @@ import { EnrollmentTable, StudentTable, SubjectTable, TeacherTable } from "../db
 import { error } from "./common.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { expressjwt } from "express-jwt";
 
 const { privateKey, publicKey } = generateKeyPairSync('rsa', {
     modulusLength: 2048,
@@ -68,26 +69,15 @@ auth.route("/login")
         error(res, 401, "Contraseña o usuario incorrectos")
     })
 
-export const verifyToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-        return error(res, 401, "No se proporcionó el token")
-    }
+export const verifyToken = expressjwt({ secret: publicKey, algorithms: [ "RS512" ] })
 
-    const parts = authHeader.split(" ");
-    if (parts.length !== 2) {
-        return error(res, 401, "Formato de token inválido")
-    }
-
-    const [scheme, token] = parts;
-
-    jwt.verify(token, publicKey, { algorithms: ["RS512"] }, (err) => {
-        if (err) {
-            return error(res, 401, "Token inválido")
-        }
-        next();
-    });
-};
-
+/**
+ * @param {import("express").Request} req
+ * @param {"student" | "teacher"} role
+ * @param {string | undefined | null} id
+ */
+export function validarIdentidad(req, role, id) {
+    return !id || (req.auth.role == role && req.auth.id == parseInt(id))
+}
 
 export default auth
