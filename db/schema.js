@@ -21,7 +21,7 @@ export function validarPut(schema, data) {
 }
 
 /**
- * @typedef {z.infer<typeof StudentSchema>} Student
+ * @typedef {z.infer<typeof StudentSchema>} StudentSchema
  */
 export const StudentSchema = z.object({
     id: z.int(),
@@ -35,7 +35,7 @@ export const StudentSchema = z.object({
 })
 
 /**
- * @typedef {z.infer<typeof TeacherSchema>} Teacher
+ * @typedef {z.infer<typeof TeacherSchema>} TeacherSchema
  */
 export const TeacherSchema = z.object({
     id: z.int(),
@@ -48,7 +48,7 @@ export const TeacherSchema = z.object({
 })
 
 /**
- * @typedef {z.infer<typeof AbsenceSchema>} Absence
+ * @typedef {z.infer<typeof AbsenceSchema>} AbsenceSchema
  */
 export const AbsenceSchema = z.object({
     id: z.int(),
@@ -59,7 +59,7 @@ export const AbsenceSchema = z.object({
 })
 
 /**
- * @typedef {z.infer<typeof GradeSchema>} Grade
+ * @typedef {z.infer<typeof GradeSchema>} GradeSchema
  */
 export const GradeSchema = z.object({
     id: z.int(),
@@ -70,7 +70,7 @@ export const GradeSchema = z.object({
 })
 
 /**
- * @typedef {z.infer<typeof EnrollmentSchema>} Enrollment
+ * @typedef {z.infer<typeof EnrollmentSchema>} EnrollmentSchema
  */
 export const EnrollmentSchema = z.object({
     id: z.int(),
@@ -81,7 +81,7 @@ export const EnrollmentSchema = z.object({
 })
 
 /**
- * @typedef {z.infer<typeof SubjectSchema>} Subject
+ * @typedef {z.infer<typeof SubjectSchema>} SubjectSchema
  */
 export const SubjectSchema = z.object({
     id: z.int(),
