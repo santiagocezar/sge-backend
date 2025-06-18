@@ -4,6 +4,7 @@ import { error } from "./common.js";
 import { body, validationResult } from "express-validator";
 import { TeacherSchema, validarPost } from "../db/schema.js";
 import { verifyToken } from "./auth.js";
+import bcrypt from "bcrypt"
 
 
 const docentes = Router()
@@ -29,9 +30,11 @@ docentes.route("/")
 
             const docente = validarPost(TeacherSchema, req.body)
 
-            if (await TeacherTable.findOne({ where: { email: docente.email } }) || await StudentTable.findOne({ where: { email: alumno.email } })) {
+            if (await TeacherTable.findOne({ where: { email: docente.email } }) || await StudentTable.findOne({ where: { email: docente.email } })) {
                 return error(res, 409, "ya existe una cuenta con ese email")
             }
+
+            docente.password = await bcrypt.hash(docente.password, 10)
 
             const data = await TeacherTable.create(docente)
             res.status(201).json({ ok: true, id: data.id })
