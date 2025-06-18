@@ -7,6 +7,8 @@ import { error } from "./common.js";
 
 const materias = Router()
 
+materias.use(verifyToken)
+
 materias.route("/")
     .get([
         query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
