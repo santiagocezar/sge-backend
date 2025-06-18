@@ -20,9 +20,13 @@ const { privateKey, publicKey } = generateKeyPairSync('rsa', {
 
 const auth = Router()
 
+const EXPIRY = 3600 // una hora
+
 auth.route("/login")
     .post(async (req, res) => {
         const { isTeacher, email, password } = req.body;
+
+        let payload = undefined
 
         if (isTeacher === "true") {
             const teacher = await TeacherTable.findOne({
@@ -31,18 +35,11 @@ auth.route("/login")
                 }
             });
 
-            const ok = await bcrypt.compare(password, teacher.password)
-
-            if (ok) {
-                jwt.sign({
+            if (await bcrypt.compare(password, teacher.password)) {
+                payload = {
                     role: "teacher",
-                    id: teacher.id
-                }, privateKey, {
-                    algorithm: "RS512"
-                })
-
-                res.status(200).json({ ok: true, token })
-                return
+                    id: teacher.id,
+                }
             }
         } else {
             const student = await StudentTable.findOne({
@@ -51,22 +48,29 @@ auth.route("/login")
                 }
             });
 
-            const ok = await bcrypt.compare(password, student.password)
-
-            if (ok) {
-                const token = jwt.sign({
+            if (await bcrypt.compare(password, student.password)) {
+                payload = {
                     role: "student",
-                    id: student.id
-                }, privateKey, {
-                    algorithm: "RS512"
-                })
-
-                res.status(200).json({ ok: true, token })
-                return
+                    id: student.id,
+                }
             }
         }
 
-        error(res, 401, "Contraseña o usuario incorrectos")
+        if (payload) {
+            const token = jwt.sign(payload, privateKey, {
+                algorithm: "RS512",
+                expiresIn: EXPIRY
+            })
+
+            res.status(200).json({
+                ok: true,
+                token,
+                expiresIn: EXPIRY,
+                ...payload
+            })
+        } else {
+            error(res, 401, "Contraseña o usuario incorrectos")
+        }
     })
 
 export const verifyToken = expressjwt({ secret: publicKey, algorithms: [ "RS512" ] })
