@@ -11,7 +11,6 @@ materias.route("/")
     .get([
         query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
         query("docente").isInt().withMessage("El ID de la docente debe ser un número"),
-        verifyToken,
     ], async (req, res) => {
         if (!validarIdentidad(req, "student", req.query.alumno) || !validarIdentidad(req, "teacher", req.query.docente)) {
             error(res, 403, "No tiene el permiso")

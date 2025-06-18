@@ -2,8 +2,11 @@ import { Router } from "express";
 import { GradeTable, StudentTable, SubjectTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, query, validationResult } from "express-validator";
+import { verifyToken } from "./auth.js";
 
 const calificaciones = Router()
+
+calificaciones.use(verifyToken)
 
 calificaciones.route("/")
     .get([

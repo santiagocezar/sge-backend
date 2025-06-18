@@ -1,8 +1,11 @@
 import { Router } from "express";
 import { EnrollmentTable, StudentTable, SubjectTable } from "../db/index.js";
 import { error } from "./common.js";
+import { verifyToken } from "./auth.js";
 
 const inscripciones = Router()
+
+inscripciones.use(verifyToken)
 
 inscripciones.route("/")
     .get(async (req, res) => {

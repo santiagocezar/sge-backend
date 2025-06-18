@@ -8,7 +8,7 @@ import { error } from "./common.js";
 
 const alumnos = Router()
 
-//alumnos.use(verifyToken)
+alumnos.use(verifyToken)
 
 alumnos.route("/")
     .get([

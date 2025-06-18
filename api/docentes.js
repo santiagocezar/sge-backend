@@ -3,9 +3,12 @@ import { TeacherTable, StudentTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, validationResult } from "express-validator";
 import { TeacherSchema, validarPost } from "../db/schema.js";
+import { verifyToken } from "./auth.js";
 
 
 const docentes = Router()
+
+docentes.use(verifyToken)
 
 docentes.route("/")
     .get(async (req, res) => {

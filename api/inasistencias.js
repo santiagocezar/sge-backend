@@ -2,8 +2,11 @@ import { Router } from "express";
 import { AbsenceTable, StudentTable, SubjectTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, validationResult, query } from "express-validator";
+import { verifyToken } from "./auth.js";
 
 const inasistencias = Router()
+
+inasistencias.use(verifyToken)
 
 inasistencias.route("/")
     .get([

@@ -28,7 +28,7 @@ auth.route("/login")
 
         let payload = undefined
 
-        if (isTeacher === "true") {
+        if (isTeacher) {
             const teacher = await TeacherTable.findOne({
                 where: {
                     email
