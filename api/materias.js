@@ -46,7 +46,14 @@ materias.route("/")
 
 materias.route("/:id")
     .get(async (req, res) => {
-        const data = await SubjectTable.findByPk(req.params.id);
+        const data = await SubjectTable.findByPk(req.params.id, {
+            include: [
+                {
+                    model: TeacherTable,
+                    required: true,
+                },
+            ]
+        });
         if (data) {
             res.status(200).json(data)
         } else {

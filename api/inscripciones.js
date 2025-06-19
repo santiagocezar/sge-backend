@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { EnrollmentTable, StudentTable, SubjectTable } from "../db/index.js";
 import { error } from "./common.js";
-import { verifyToken } from "./auth.js";
+import { validarIdentidad, verifyToken } from "./auth.js";
 
 const inscripciones = Router()
 
@@ -13,6 +13,11 @@ inscripciones.route("/")
     })
     .post(async (req, res) => {
         const { studentID, subjectID } = req.body;
+
+        if (!validarIdentidad(req, "student", studentID)) {
+            error(res, 403, "No tiene el permiso")
+            return
+        }
 
         const student = await StudentTable.findByPk(studentID);
         const subject = await SubjectTable.findByPk(subjectID);

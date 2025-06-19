@@ -10,6 +10,8 @@ import docentes from './api/docentes.js'
 import inscripciones from './api/inscripciones.js'
 import { error } from './api/common.js'
 import auth from './api/auth.js'
+import { UnauthorizedError } from 'express-jwt'
+import { ZodError } from 'zod/v4'
 
 const app = express()
 
@@ -24,8 +26,14 @@ app.use("/api/inscripciones", inscripciones)
 app.use("/api/auth", auth)
 
 app.use((err, req, res, next) => {
+  let status = 500
+  if (err instanceof UnauthorizedError) {
+    status = 401
+  } else if (err instanceof ZodError) {
+    status = 400
+  }
   console.error(err.stack)
-  error(res, 500, err.message)
+  error(res, status, err.message)
 })
 
 app.listen(3000, () => {
