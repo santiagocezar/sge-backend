@@ -83,7 +83,7 @@ export function requiereRol(role) {
      * @type {import("express").RequestHandler}
      */
     const middleware = (req, res, next) => {
-        if (!req.auth.role !== role) {
+        if (req.auth.role !== role) {
             error(res, 403, "No tiene el permiso")
         } else {
             next()
