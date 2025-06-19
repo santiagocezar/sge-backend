@@ -29,7 +29,7 @@ export const StudentSchema = z.object({
     surname: z.string(),
     dni: z.int(),
     email: z.email(),
-    phone: z.regex(/^\+?[1-9]\d{1,14}$/),
+    phone: z.string().regex(/^\+?[1-9]\d{1,14}$/),
     career: z.literal(["A", "B", "C", "D", "E", "Z"]),
     password: z.string(),
 })
@@ -43,7 +43,7 @@ export const TeacherSchema = z.object({
     surname: z.string(),
     dni: z.int(),
     email: z.email(),
-    phone: z.regex(/^\+?[1-9]\d{1,14}$/),
+    phone: z.string().regex(/^\+?[1-9]\d{1,14}$/),
     password: z.string(),
 })
 

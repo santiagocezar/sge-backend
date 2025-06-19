@@ -2,7 +2,8 @@ import { Router } from "express";
 import { GradeTable, StudentTable, SubjectTable } from "../db/index.js";
 import { error } from "./common.js";
 import { body, query, validationResult } from "express-validator";
-import { verifyToken } from "./auth.js";
+import { requiereRol, verifyToken } from "./auth.js";
+import { GradeSchema, validarPost, validarPut } from "../db/schema.js";
 
 const calificaciones = Router()
 
@@ -13,6 +14,13 @@ calificaciones.route("/")
         query("alumno").isInt().withMessage("El ID de la alumno debe ser un número"),
         query("materia").isInt().withMessage("El ID de la materia debe ser un número"),
     ], async (req, res) => {
+        const materia = req.query.materia && await SubjectTable.findByPk(req.query.materia)
+        
+        if (!validarIdentidad(req, "student", req.query.alumno) && !validarIdentidad(req, "teacher", materia?.teacherID)) {
+            error(res, 403, "No tiene el permiso")
+            return
+        }
+
         res.status(200).json(await GradeTable.findAll({
             where: {
                 ...(req.query.materia ? {
@@ -25,15 +33,11 @@ calificaciones.route("/")
         }))
     })
     .post([
-        body("instance").isString().withMessage("Instancia debe ser string"),
-        body("grade").isInt().withMessage("Calificación debe ser entero").isIn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).withMessage("Calificación debe estar entre 1 y 10")
+        requiereRol("teacher")
     ], async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+        const calificacion = validarPost(GradeSchema, req.body)
 
-        const { studentID, subjectID } = req.body;
+        const { studentID, subjectID } = calificacion;
 
         const student = await StudentTable.findByPk(studentID);
         const subject = await SubjectTable.findByPk(subjectID);
@@ -48,26 +52,37 @@ calificaciones.route("/")
 
 calificaciones.route("/:id")
     .get(async (req, res) => {
-        const data = await GradeTable.findByPk(req.params.id);
+        const data = await GradeTable.findByPk(req.params.id, {
+            include: [
+                {
+                    model: SubjectTable,
+                    required: true,
+                },
+            ]
+        });
+
         if (data) {
+            if (!validarIdentidad(req, "student", data.studentID) && !validarIdentidad(req, "teacher", data.Subject.teacherID)) {
+                error(res, 403, "No tiene el permiso")
+                return
+            }
+
             res.status(200).json(data)
         } else {
             error(res, 404, "no existe la inscripción");
         }
     })
     .put([
-        body("instance").isString().withMessage("Instancia debe ser string"),
-        body("grade").isInt().withMessage("Calificación debe ser entero").isIn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).withMessage("Calificación debe estar entre 1 y 10")
+        requiereRol("teacher")
     ], async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
+        const calificacion = validarPut(AbsenceSchema, req.body)
         
-        const [data] = await GradeTable.upsert({ ...req.body, id: req.params.id })
+        const [data] = await GradeTable.upsert({ ...calificacion, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
     })
-    .delete(async (req, res) => {
+    .delete([
+        requiereRol("teacher")
+    ], async (req, res) => {
         const data = await GradeTable.findByPk(req.params.id)
 
         if (!data) {
