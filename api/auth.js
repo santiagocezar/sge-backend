@@ -81,14 +81,16 @@ auth.route("/login")
 export const verifyToken = expressjwt({ secret: publicKey, algorithms: [ "RS512" ] })
 
 /**
- * @param {"student" | "teacher"} role
+ * @param {"student" | "teacher" | "admin"} role
  */
 export function requiereRol(role) {
     /**
      * @type {import("express").RequestHandler}
      */
     const middleware = (req, res, next) => {
-        if (req.auth.role !== role) {
+        if (req.auth.role === "admin") {
+            next()
+        } else if (req.auth.role !== role) {
             error(res, 403, "No tiene el permiso")
         } else {
             next()
@@ -99,11 +101,11 @@ export function requiereRol(role) {
 
 /**
  * @param {import("express").Request} req
- * @param {"student" | "teacher"} role
+ * @param {"student" | "teacher" | "admin"} role
  * @param {string | undefined | null} id
  */
 export function validarIdentidad(req, role, id) {
-    return !id || (req.auth.role == role && req.auth.id == parseInt(id))
+    return !id || (req.auth.role === "admin") || (req.auth.role == role && req.auth.id == parseInt(id))
 }
 
 export default auth
