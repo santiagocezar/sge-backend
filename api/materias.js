@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { EnrollmentTable, StudentTable, SubjectTable, TeacherTable } from "../db/index.js";
+import { AbsenceTable, EnrollmentTable, GradeTable, StudentTable, SubjectTable, TeacherTable } from "../db/index.js";
 import { body, query, validationResult } from "express-validator";
 import { SubjectSchema, validarPost, validarPut } from "../db/schema.js";
 import { requiereRol, validarIdentidad, verifyToken } from "./auth.js";
@@ -73,12 +73,16 @@ materias.route("/:id")
     .delete([
         requiereRol("teacher"),
     ], async(req, res) => {
-        const data = await SubjectTable.findByPk(req.params.id)
+        const id = req.params.id
+        const data = await SubjectTable.findByPk(id)
 
         if (!data) {
             return error(res, 404, "no existe la materia");
         }
 
+        await GradeTable.destroy({ where: { subjectID: id } })
+        await EnrollmentTable.destroy({ where: { subjectID: id } })
+        await AbsenceTable.destroy({ where: { subjectID: id } })
         await data.destroy()
         res.status(200).json({ ok: true })
     })
