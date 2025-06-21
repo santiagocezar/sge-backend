@@ -4,6 +4,7 @@ import { error } from "./common.js";
 import { body, query, validationResult } from "express-validator";
 import { requiereRol, verifyToken } from "./auth.js";
 import { GradeSchema, validarPost, validarPut } from "../db/schema.js";
+import { validarIdentidad } from "./auth.js";
 
 const calificaciones = Router()
 
