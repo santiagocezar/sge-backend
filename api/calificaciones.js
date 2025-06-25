@@ -76,7 +76,7 @@ calificaciones.route("/:id")
     .put([
         requiereRol("teacher")
     ], async (req, res) => {
-        const calificacion = validarPut(AbsenceSchema, req.body)
+        const calificacion = validarPut(GradeSchema, req.body)
         
         const [data] = await GradeTable.upsert({ ...calificacion, id: req.params.id })
         res.status(200).json({ ok: true, id: data.id })
